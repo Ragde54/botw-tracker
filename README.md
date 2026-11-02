@@ -3,6 +3,8 @@
 Tracker local de los materiales que faltan para subir a ★4 las armaduras de Zelda: Breath of the Wild.
 Las armaduras de amiibo están excluidas.
 
+<img src="docs/screenshot.png" alt="Inventario de Mejoras BOTW" width="900">
+
 ## Arrancar
 
 ```bash
