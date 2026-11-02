@@ -1,0 +1,21 @@
+[project]
+name = "botw-tracker"
+version = "0.1.0"
+description = "Tracker local de materiales para mejorar armaduras en Zelda: Breath of the Wild"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "psycopg[binary]>=3.2",
+    "psycopg-pool>=3.2",
+]
+
+[project.scripts]
+botw-tracker = "botw_tracker.main:run"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/botw_tracker"]

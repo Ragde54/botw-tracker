@@ -1,0 +1,1024 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Inventario de Mejoras BOTW</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Alegreya+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+  <style>
+    /* Layout: Sheikah-slate tool. Summary bar on top, then two columns on desktop:
+   armor sets (wide, left) and the live material totals (sticky, right). Stacked on phone, totals first. */
+    :root {
+      --bg: #e9edf1;
+      --surface: #f7f9fb;
+      --line: #cdd5de;
+      --ink: #1b2433;
+      --muted: #5b6778;
+      --accent: #c26a12;
+      --accent-soft: #f4e2cc;
+      --sheikah: #2b5f86;
+      --done: #2f7a4f;
+      --done-soft: #d9eee1;
+      --f-display: "Marcellus SC", "Cinzel", Georgia, serif;
+      --f-body: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+      --f-num: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+      --c-monstruo: #a2453a;
+      --c-dragon: #6b4fa6;
+      --c-gema: #2b7fa6;
+      --c-ancestral: #c26a12;
+      --c-animal: #3d8a5a;
+      --c-planta: #6e8a2a;
+    }
+
+    @media (prefers-color-scheme:dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #111823;
+        --surface: #18212f;
+        --line: #2b3748;
+        --ink: #e4e9f0;
+        --muted: #93a0b3;
+        --accent: #f09a3e;
+        --accent-soft: #3a2a18;
+        --sheikah: #6fb2e0;
+        --done: #5cc48a;
+        --done-soft: #173326;
+        --c-monstruo: #e07a6c;
+        --c-dragon: #a98ce6;
+        --c-gema: #6cc0e6;
+        --c-ancestral: #f09a3e;
+        --c-animal: #6fc48e;
+        --c-planta: #b3cc62;
+        color-scheme: dark
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #111823;
+      --surface: #18212f;
+      --line: #2b3748;
+      --ink: #e4e9f0;
+      --muted: #93a0b3;
+      --accent: #f09a3e;
+      --accent-soft: #3a2a18;
+      --sheikah: #6fb2e0;
+      --done: #5cc48a;
+      --done-soft: #173326;
+      --c-monstruo: #e07a6c;
+      --c-dragon: #a98ce6;
+      --c-gema: #6cc0e6;
+      --c-ancestral: #f09a3e;
+      --c-animal: #6fc48e;
+      --c-planta: #b3cc62;
+      color-scheme: dark
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html {
+      color-scheme: light
+    }
+
+    body {
+      margin: 0
+    }
+
+    [hidden] {
+      display: none !important
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--f-body);
+      font-size: 16px;
+      line-height: 1.4;
+      padding-left: max(16px, env(safe-area-inset-left, 0px));
+      padding-right: max(16px, env(safe-area-inset-right, 0px));
+      padding-block: 20px 40px
+    }
+
+    .wrap {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: var(--f-display);
+      font-weight: 400;
+      margin: 0;
+      text-wrap: balance
+    }
+
+    h1 {
+      font-size: clamp(1.6rem, 3.5vw, 2.3rem);
+      letter-spacing: .02em
+    }
+
+    .eyebrow {
+      font-size: .75rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--sheikah);
+      font-weight: 700
+    }
+
+    .num {
+      font-family: var(--f-num);
+      font-variant-numeric: tabular-nums
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px 32px;
+      align-items: flex-end;
+      justify-content: space-between
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 28px
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column
+    }
+
+    .stat b {
+      font-family: var(--f-num);
+      font-size: 1.35rem;
+      font-weight: 500
+    }
+
+    .stat span {
+      font-size: .8rem;
+      color: var(--muted)
+    }
+
+    .sync {
+      font-size: .8rem;
+      color: var(--muted)
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 460px;
+      gap: 24px;
+      align-items: start
+    }
+
+    @media (max-width:900px) {
+      .grid {
+        grid-template-columns: minmax(0, 1fr)
+      }
+
+      .mats {
+        order: -1;
+        position: static !important;
+        max-height: none !important
+      }
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 12px
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-soft);
+      color: var(--ink);
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: .85rem
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+      cursor: pointer
+    }
+
+    .btn {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 5px 11px;
+      font-size: .88rem
+    }
+
+    .btn:hover {
+      border-color: var(--sheikah)
+    }
+
+    .btn.primary {
+      background: var(--sheikah);
+      border-color: var(--sheikah);
+      color: var(--surface);
+      font-weight: 700
+    }
+
+    .btn.danger {
+      border-color: var(--c-monstruo);
+      color: var(--c-monstruo)
+    }
+
+    .btn:disabled {
+      opacity: .4;
+      cursor: default
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px
+    }
+
+    .group-title {
+      margin: 18px 0 10px;
+      display: flex;
+      align-items: baseline;
+      gap: 10px
+    }
+
+    .group-title h2 {
+      font-size: 1.3rem
+    }
+
+    .sets {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 14px
+    }
+
+    .set {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 0
+    }
+
+    .set.off {
+      opacity: .55
+    }
+
+    .set.max {
+      border-color: var(--done)
+    }
+
+    .set-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: flex-start
+    }
+
+    .set-head h3 {
+      font-size: 1.12rem
+    }
+
+    .bonus {
+      font-size: .8rem;
+      color: var(--muted)
+    }
+
+    .count-toggle {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .78rem;
+      color: var(--muted);
+      white-space: nowrap
+    }
+
+    .piece {
+      border-top: 1px dashed var(--line);
+      padding-top: 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px
+    }
+
+    .piece-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px
+    }
+
+    .piece-name {
+      font-weight: 500
+    }
+
+    .stars {
+      display: flex;
+      gap: 2px;
+      flex-shrink: 0
+    }
+
+    .star {
+      background: none;
+      border: none;
+      padding: 2px;
+      line-height: 0
+    }
+
+    .star svg {
+      width: 22px;
+      height: 22px
+    }
+
+    .star path {
+      fill: none;
+      stroke: var(--muted);
+      stroke-width: 1.5
+    }
+
+    .star.on path {
+      fill: var(--accent);
+      stroke: var(--accent)
+    }
+
+    .next {
+      font-size: .82rem;
+      color: var(--muted)
+    }
+
+    .next.maxed {
+      color: var(--done);
+      font-weight: 700
+    }
+
+    .set-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px
+    }
+
+    .mats {
+      position: sticky;
+      top: 12px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px;
+      max-height: calc(100vh - 24px);
+      overflow: auto;
+      min-width: 0
+    }
+
+    .mats-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+      flex-wrap: wrap
+    }
+
+    .mats-head h2 {
+      font-size: 1.3rem
+    }
+
+    select {
+      font: inherit;
+      font-size: .85rem;
+      background: var(--surface);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 3px 6px
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 12px;
+      font-size: .75rem;
+      color: var(--muted);
+      margin-bottom: 10px
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px
+    }
+
+    .mat-cols,
+    .mat {
+      display: grid;
+      grid-template-columns: 22px minmax(0, 1fr) 98px 50px 50px;
+      gap: 6px;
+      align-items: center
+    }
+
+    .mat-cols {
+      font-size: .68rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 0 6px 4px;
+      border-bottom: 1px solid var(--line)
+    }
+
+    .mat-cols span:nth-child(n+3) {
+      text-align: right
+    }
+
+    .mat-cols span:nth-child(3) {
+      text-align: center
+    }
+
+    .mat {
+      border-radius: 6px;
+      padding: 4px 6px
+    }
+
+    .mat-name {
+      background: none;
+      border: none;
+      padding: 0;
+      text-align: left;
+      min-width: 0;
+      overflow-wrap: anywhere
+    }
+
+    .mat-name:hover {
+      text-decoration: underline;
+      text-decoration-color: var(--sheikah)
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px
+    }
+
+    .step button {
+      width: 24px;
+      height: 24px;
+      border: 1px solid var(--line);
+      background: var(--bg);
+      border-radius: 5px;
+      line-height: 1;
+      font-size: .95rem;
+      padding: 0
+    }
+
+    .step button:hover {
+      border-color: var(--sheikah)
+    }
+
+    .step input {
+      width: 42px;
+      text-align: center;
+      font-family: var(--f-num);
+      font-size: .9rem;
+      background: var(--surface);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      padding: 2px 0;
+      -moz-appearance: textfield
+    }
+
+    .step input::-webkit-inner-spin-button,
+    .step input::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0
+    }
+
+    .mat .n.ok {
+      color: var(--done);
+      font-weight: 700
+    }
+
+    .mat:hover {
+      background: var(--bg)
+    }
+
+    .mat.sel {
+      background: var(--accent-soft)
+    }
+
+    .mat .n {
+      text-align: right;
+      font-family: var(--f-num);
+      font-variant-numeric: tabular-nums
+    }
+
+    .mat .n.next {
+      color: var(--accent);
+      font-size: .95rem
+    }
+
+    .mat .n.zero {
+      color: var(--line)
+    }
+
+    .glyph {
+      width: 20px;
+      height: 20px
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: .9rem;
+      padding: 12px 6px
+    }
+
+    .note {
+      font-size: .78rem;
+      color: var(--muted);
+      max-width: 65ch
+    }
+
+    .upnext {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .upnext-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .upnext-head h2 {
+      font-size: 1.3rem
+    }
+
+    .up {
+      display: grid;
+      grid-template-columns: 64px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 8px 0;
+      border-top: 1px dashed var(--line)
+    }
+
+    .up-miss {
+      font-family: var(--f-num);
+      font-variant-numeric: tabular-nums;
+      text-align: center;
+      line-height: 1.1
+    }
+
+    .up-miss b {
+      display: block;
+      font-size: 1.35rem;
+      font-weight: 500;
+      color: var(--accent)
+    }
+
+    .up-miss span {
+      font-size: .68rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em
+    }
+
+    .up.ready .up-miss b {
+      color: var(--done)
+    }
+
+    .up-body {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 3px
+    }
+
+    .up-title {
+      font-weight: 700
+    }
+
+    .up-title small {
+      font-weight: 400;
+      color: var(--muted)
+    }
+
+    .up-mats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px
+    }
+
+    .tag {
+      font-size: .78rem;
+      border-radius: 4px;
+      padding: 1px 6px;
+      background: var(--bg);
+      border: 1px solid var(--line)
+    }
+
+    .tag.have {
+      color: var(--done);
+      border-color: var(--done-soft);
+      background: var(--done-soft)
+    }
+
+    .tag.short {
+      color: var(--ink);
+      border-color: var(--accent);
+      background: var(--accent-soft)
+    }
+
+    .tag .shared {
+      color: var(--sheikah);
+      font-weight: 700;
+      margin-left: 3px
+    }
+
+    @media (max-width:520px) {
+      .up {
+        grid-template-columns: 52px minmax(0, 1fr)
+      }
+
+      .up .btn {
+        grid-column: 2;
+        justify-self: start
+      }
+    }
+
+    @media (prefers-reduced-motion:no-preference) {
+      .star path {
+        transition: fill .15s
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <div class="eyebrow">Breath of the Wild · Fuentes de la Gran Hada</div>
+        <h1>Inventario de Mejoras</h1>
+      </div>
+      <div class="stats" id="stats"></div>
+    </header>
+
+    <div class="grid">
+      <main>
+        <section class="upnext" id="upnext" aria-labelledby="upnext-h"></section>
+        <div class="toolbar" id="toolbar"></div>
+        <div id="setsRoot"></div>
+        <p class="note">Datos de la guía de armaduras de Vandal. Correcciones aplicadas: erratas de nombres, "Capucha
+          hyliana" duplicada (la segunda es la Túnica hyliana), cantidad que faltaba en el Casco de bárbaro ★2 (5) y
+          Pantalón de bárbaro ★3 igualado al resto del set (1 víscera). Las piezas sin mejoras (set oscuro, gerudo,
+          máscaras de Kilton…) no aparecen.</p>
+      </main>
+      <aside class="mats" id="mats"></aside>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Data ----------
+    const R = (...lv) => lv; // lv = [[mat,qty],...] per level 1..4
+    const same = (rec) => [rec, rec, rec];
+    const SETS = [
+      {
+        id: "barbaro", name: "Bárbaro", bonus: "Ataque cargado +", pieces: ["Casco de bárbaro", "Pechera de bárbaro", "Pantalón de bárbaro"],
+        recipes: ["Elden", "Faren", "Nayen"].map(d => R([["Cuerno de centaleón", 3]], [["Cuerno de centaleón", 5], ["Pezuña de centaleón", 5]], [["Pezuña de centaleón", 8], ["Víscera de centaleón", 1]], [["Víscera de centaleón", 10], ["Cuerno de " + d, 1]]))
+      },
+      {
+        id: "escalada", name: "Escalada", bonus: "Resistencia al escalar +", pieces: ["Pañuelo de escalada", "Camiseta de escalada", "Mallas de escalada"],
+        recipes: same(R([["Ala de keese", 3], ["Seta rauda", 3]], [["Ala de keese eléctrico", 5], ["Lagarto raudo", 5]], [["Ala de keese de hielo", 5], ["Rana rauda", 10]], [["Ala de keese de fuego", 5], ["Violeta rauda", 20]]))
+      },
+      {
+        id: "desierto", name: "Desierto", bonus: "Resistencia a la electricidad", pieces: ["Coletero del desierto", "Hombrera del desierto", "Grebas del desierto"],
+        recipes: same(R([["Gelatina gélida", 3]], [["Gelatina gélida", 5], ["Ala de keese de hielo", 3]], [["Ala de keese de hielo", 8], ["Cola de lizalfos gélido", 3]], [["Cola de lizalfos gélido", 10], ["Zafiro", 5]]))
+      },
+      {
+        id: "ignifugo", name: "Ignífugo", bonus: "Invulnerabilidad a las llamas", pieces: ["Casco ignífugo", "Armadura ignífuga", "Grebas ignífugas"],
+        recipes: same(R([["Lagarto ignífugo", 3], ["Cuerno de moblin", 3]], [["Lagarto ignífugo", 5], ["Cuerno de moblin", 5]], [["Mariposa ignífuga", 5], ["Víscera de moblin", 3]], [["Mariposa ignífuga", 8], ["Víscera de hinox", 5]]))
+      },
+      {
+        id: "aislante", name: "Aislante", bonus: "Antirrayos", pieces: ["Casco aislante", "Túnica aislante", "Pantalón aislante"],
+        recipes: same(R([["Gelatina eléctrica", 3]], [["Gelatina eléctrica", 5], ["Fruta electro", 5]], [["Seta electro", 5], ["Cola de lizalfos eléctrico", 5]], [["Cola de lizalfos eléctrico", 10], ["Topacio", 10]]))
+      },
+      {
+        id: "orni", name: "Orni", bonus: "Anticongelación", pieces: ["Plumas orni", "Túnica orni", "Pantalón orni"],
+        recipes: same(R([["Gelatina ígnea", 3]], [["Gelatina ígnea", 5], ["Hierba ígnea", 3]], [["Ala de keese de fuego", 8], ["Seta ígnea", 5]], [["Cola de lizalfos ígneo", 10], ["Rubí", 5]]))
+      },
+      {
+        id: "zora", name: "Zora", bonus: "Resistencia al nadar +", pieces: ["Capucha zora", "Armadura zora", "Grebas zora"],
+        recipes: same(R([["Cuerno de lizalfos", 3]], [["Garra de lizalfos", 5], ["Lubina de Hyrule", 5]], [["Cola de lizalfos", 5], ["Lubina vivaz", 5]], [["Cola de lizalfos", 10], ["Ópalo", 15]]))
+      },
+      {
+        id: "sigilo", name: "Sigilo", bonus: "Velocidad nocturna +", pieces: ["Máscara de sigilo", "Túnica de sigilo", "Mallas de sigilo"],
+        recipes: same(R([["Flor sigilosa", 3]], [["Flor sigilosa", 5], ["Luciérnaga sigilosa", 5]], [["Seta sigilosa", 8], ["Caracol sigiloso", 5]], [["Caracol vivaz", 10], ["Princesa de la calma", 5]]))
+      },
+      {
+        id: "ancestral", name: "Ancestral", bonus: "Ataque ancestral +", pieces: ["Casco ancestral", "Armadura ancestral", "Grebas ancestrales"],
+        recipes: same(R([["Tornillo ancestral", 5], ["Resorte ancestral", 5]], [["Resorte ancestral", 15], ["Engranaje ancestral", 10]], [["Eje ancestral", 5], ["Núcleo ancestral", 5]], [["Fragmento de estrella", 3], ["Gran núcleo ancestral", 3]]))
+      },
+      {
+        id: "luminoso", name: "Luminoso", bonus: "Incógnito, armas esqueléticas +", pieces: ["Máscara luminosa", "Camiseta luminosa", "Mallas luminosas"],
+        recipes: same(R([["Gema luminosa", 5], ["Víscera de bokoblin", 3]], [["Gema luminosa", 8], ["Víscera de moblin", 3]], [["Gema luminosa", 10], ["Víscera de moldora", 3]], [["Gema luminosa", 20], ["Víscera de centaleón", 3]]))
+      },
+      {
+        id: "hyliano-ropa", name: "Hyliano (ropa)", bonus: "Sin bonificación", pieces: ["Capucha hyliana", "Túnica hyliana", "Pantalón hyliano"],
+        recipes: same(R([["Cuerno de bokoblin", 5]], [["Cuerno de bokoblin", 8], ["Colmillo de bokoblin", 5]], [["Cuerno de bokoblin", 10], ["Víscera de bokoblin", 5]], [["Víscera de bokoblin", 15], ["Ámbar", 30]]))
+      },
+      {
+        id: "hyliano-armadura", name: "Hyliano (armadura)", bonus: "Sin bonificación", pieces: ["Casco hyliano", "Armadura hyliana", "Grebas hylianas"],
+        recipes: same(R([["Gelatina de chuchu", 5], ["Víscera de bokoblin", 3]], [["Ala de keese", 5], ["Víscera de moblin", 3]], [["Cola de lizalfos", 5], ["Víscera de hinox", 3]], [["Pezuña de centaleón", 4], ["Víscera de centaleón", 2]]))
+      },
+      {
+        id: "salvaje", name: "Lo salvaje", bonus: "Rayo de la Espada Maestra +", pieces: ["Gorro de lo salvaje", "Túnica de lo salvaje", "Pantalón de lo salvaje"],
+        recipes: ["Faren", "Nayen", "Elden"].map(d => R([["Bellota", 10], ["Escama de " + d, 2]], [["Miel de vigor", 5], ["Garra de " + d, 2]], [["Escarabajo vigoroso", 5], ["Colmillo de " + d, 2]], [["Fragmento de estrella", 1], ["Cuerno de " + d, 2]]))
+      },
+      {
+        id: "deidad", name: "Fiera deidad", amiibo: true, bonus: "Ataque cargado +", pieces: ["Máscara de la deidad", "Armadura de la deidad", "Pantalón de la deidad"],
+        recipes: ["Elden", "Nayen", "Faren"].map(d => R([["Uña de hinox", 5], ["Escama de " + d, 1]], [["Colmillo de hinox", 5], ["Garra de " + d, 1]], [["Víscera de hinox", 5], ["Colmillo de " + d, 1]], [["Víscera de centaleón", 5], ["Cuerno de " + d, 1]]))
+      },
+      {
+        id: "cielos", name: "De los cielos", amiibo: true, bonus: "Rayo de la Espada Maestra +", pieces: ["Gorro de los cielos", "Túnica de los cielos", "Pantalón de los cielos"],
+        recipes: same(R([["Zafiro", 1], ["Fragmento de estrella", 1]], [["Zafiro", 3], ["Fragmento de estrella", 3]], [["Zafiro", 5], ["Fragmento de estrella", 3]], [["Zafiro", 10], ["Fragmento de estrella", 4]]))
+      },
+      {
+        id: "tiempo", name: "Del tiempo", amiibo: true, bonus: "Rayo de la Espada Maestra +", pieces: ["Gorro del tiempo", "Túnica del tiempo", "Pantalón del tiempo"],
+        recipes: same(R([["Ámbar", 3], ["Fragmento de estrella", 1]], [["Ámbar", 5], ["Fragmento de estrella", 2]], [["Ámbar", 15], ["Fragmento de estrella", 3]], [["Ámbar", 30], ["Fragmento de estrella", 4]]))
+      },
+      {
+        id: "crepusculo", name: "Del crepúsculo", amiibo: true, bonus: "Rayo de la Espada Maestra +", pieces: ["Gorro del crepúsculo", "Túnica del crepúsculo", "Pantalón del crepúsculo"],
+        recipes: same(R([["Topacio", 1], ["Fragmento de estrella", 1]], [["Topacio", 3], ["Fragmento de estrella", 2]], [["Topacio", 5], ["Fragmento de estrella", 3]], [["Topacio", 10], ["Fragmento de estrella", 4]]))
+      },
+      {
+        id: "viento", name: "Del viento", amiibo: true, bonus: "Rayo de la Espada Maestra +", pieces: ["Gorro del viento", "Túnica del viento", "Pantalón del viento"],
+        recipes: same(R([["Ópalo", 3], ["Fragmento de estrella", 1]], [["Ópalo", 5], ["Fragmento de estrella", 2]], [["Ópalo", 10], ["Fragmento de estrella", 3]], [["Ópalo", 20], ["Fragmento de estrella", 4]]))
+      },
+      {
+        id: "preludio", name: "Del preludio", amiibo: true, bonus: "Rayo de la Espada Maestra +", pieces: ["Gorro del preludio", "Túnica del preludio", "Pantalón del preludio"],
+        recipes: same(R([["Rubí", 1], ["Fragmento de estrella", 1]], [["Rubí", 3], ["Fragmento de estrella", 2]], [["Rubí", 5], ["Fragmento de estrella", 3]], [["Rubí", 10], ["Fragmento de estrella", 4]]))
+      },
+    ];
+    const gem = (g, a, b, c, d) => R([[g, a], ["Pedernal", 3]], [[g, b], ["Pedernal", 3]], [[g, c], ["Fragmento de estrella", 1]], [[g, d], ["Fragmento de estrella", 1]]);
+    const SINGLES = [
+      ["Túnica del elegido", "Ver la vida de los enemigos", R([["Princesa de la calma", 3]], [["Princesa de la calma", 3], ["Cuerno de Faren", 2]], [["Princesa de la calma", 3], ["Cuerno de Nayen", 2]], [["Princesa de la calma", 3], ["Cuerno de Elden", 2]])],
+      ["Botas del desierto", "Rapidez en arena +", R([["Aleta de moldora", 5], ["Lagarto raudo", 10]], [["Aleta de moldora", 10], ["Zanahoria rauda", 10]], [["Víscera de moldora", 3], ["Seta rauda", 15]], [["Víscera de moldora", 5], ["Violeta rauda", 15]])],
+      ["Botas de nieve", "Rapidez en nieve +", R([["Tentáculo de octorok", 5], ["Lagarto raudo", 10]], [["Globo de octorok", 5], ["Zanahoria rauda", 10]], [["Ojo de octorok", 5], ["Seta rauda", 15]], [["Escama de Nayen", 2], ["Violeta rauda", 15]])],
+      ["Pendientes de topacio", "Resistencia a la electricidad", gem("Topacio", 2, 4, 6, 10)],
+      ["Pendientes de ópalo", "Nadar +", R([["Ópalo", 2], ["Pedernal", 3]], [["Ópalo", 8], ["Pedernal", 3]], [["Ópalo", 16], ["Pedernal", 3]], [["Ópalo", 20], ["Pedernal", 3]])],
+      ["Pendientes de ámbar", "Resistencia al calor", R([["Ámbar", 5], ["Pedernal", 3]], [["Ámbar", 10], ["Pedernal", 3]], [["Ámbar", 20], ["Pedernal", 3]], [["Ámbar", 30], ["Pedernal", 3]])],
+      ["Diadema de diamante", "Resistencia ancestral", gem("Diamante", 2, 4, 6, 10)],
+      ["Diadema de rubí", "Resistencia al frío", gem("Rubí", 2, 4, 6, 10)],
+      ["Diadema de zafiro", "Resistencia al calor", gem("Zafiro", 2, 4, 6, 10)],
+      ["Máscara de sheik", "Sigilo +", R([["Princesa de la calma", 1], ["Fragmento de estrella", 1]], [["Princesa de la calma", 2], ["Fragmento de estrella", 2]], [["Princesa de la calma", 3], ["Fragmento de estrella", 3]], [["Princesa de la calma", 4], ["Fragmento de estrella", 4]])],
+    ];
+    SINGLES.forEach(([n, b, r]) => SETS.push({ id: slug(n), name: n, bonus: b, single: true, amiibo: n === "Máscara de sheik", pieces: [n], recipes: [r] }));
+    for (let i = SETS.length - 1; i >= 0; i--)if (SETS[i].amiibo) SETS.splice(i, 1);
+    function slug(s) { return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-") }
+    SETS.forEach(s => { s.items = s.pieces.map((n, i) => ({ id: s.id + "/" + i, name: n, recipe: s.recipes[i] })) });
+
+    const CAT = m => {
+      const x = m.toLowerCase();
+      if (/elden|nayen|faren/.test(x)) return "dragon";
+      if (/ancestral/.test(x)) return "ancestral";
+      if (/zafiro|rubí|topacio|ópalo|ámbar|diamante|pedernal|fragmento|gema luminosa/.test(x)) return "gema";
+      if (/lagarto|rana|mariposa|luciérnaga|caracol|escarabajo|lubina/.test(x)) return "animal";
+      if (/seta|hierba|flor|fruta|zanahoria|violeta|princesa|bellota|miel/.test(x)) return "planta";
+      return "monstruo"
+    };
+    const CATS = { monstruo: "Monstruo", dragon: "Dragón", gema: "Mineral", ancestral: "Ancestral", animal: "Animal", planta: "Planta" };
+    const GLYPH = {
+      monstruo: '<path d="M5 18 C6 10 10 5 17 3 C14 7 13 12 14 18 Z"/>',
+      dragon: '<path d="M10 3 L17 9 L10 17 L3 9 Z" /><path d="M10 6 L10 14" stroke-width="1.4" fill="none" style="stroke:var(--surface)"/>',
+      gema: '<path d="M4 8 L7 4 H13 L16 8 L10 17 Z"/>',
+      ancestral: '<path d="M10 2.5l1.6 2.2 2.6-.7.4 2.7 2.5 1-1.1 2.4 1.6 2.2-2.4 1.3.1 2.7-2.7-.1-1.2 2.4L10 15.6l-2 1.9-1.2-2.4-2.7.1.1-2.7L1.8 11.2l1.6-2.2L2.3 6.6l2.5-1 .4-2.7 2.6.7z"/><circle cx="10" cy="10" r="2.6" style="fill:var(--surface)"/>',
+      animal: '<ellipse cx="10" cy="11" rx="4.5" ry="6"/><path d="M6 5 L4 2 M14 5 L16 2" stroke-width="1.5" fill="none"/>',
+      planta: '<path d="M10 18 C4 14 3 7 10 2 C17 7 16 14 10 18 Z"/>'
+    };
+    const glyph = c => `<svg class="glyph" viewBox="0 0 20 20" aria-hidden="true" style="fill:var(--c-${c});stroke:var(--c-${c})">${GLYPH[c]}</svg>`;
+
+    // ---------- State ----------
+    let state = { levels: {}, skip: {} };
+    let inv = {}; // material -> units in your in-game inventory
+    let ui = { filter: null, sort: "falta", confirmReset: false, showAllNext: false };
+    let syncMsg = "";
+
+    const lvl = id => state.levels[id] || 0;
+    function totals() {
+      const t = {};
+      for (const s of SETS) {
+        if (state.skip[s.id]) continue;
+        for (const p of s.items) {
+          const L = lvl(p.id);
+          p.recipe.forEach((lv, i) => {
+            if (i < L) return;
+            for (const [m, q] of lv) { t[m] = t[m] || { total: 0, next: 0 }; t[m].total += q; if (i === L) t[m].next += q }
+          })
+        }
+      }
+      return t
+    }
+    function needs(p, mat) { const L = lvl(p.id); return p.recipe.some((lv, i) => i >= L && lv.some(([m]) => m === mat)) }
+
+    // ---------- Render ----------
+    const $ = id => document.getElementById(id);
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    const STAR = '<svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z"/></svg>';
+
+    // Rank every countable piece by how many units you still miss for ITS next star.
+    // Each piece is evaluated on its own: inventory is not split between pieces that share a material.
+    function nextUpgrades() {
+      const out = [], demand = {};
+      for (const s of SETS) {
+        if (state.skip[s.id]) continue;
+        for (const p of s.items) {
+          const L = lvl(p.id); if (L >= 4) continue;
+          const need = p.recipe[L]; need.forEach(([m]) => demand[m] = (demand[m] || 0) + 1);
+          const mats = need.map(([m, q]) => { const have = inv[m] || 0; return { m, q, have, miss: Math.max(0, q - have) } });
+          const units = mats.reduce((a, x) => a + x.miss, 0), needed = mats.reduce((a, x) => a + x.q, 0);
+          out.push({ s, p, L, mats, units, kinds: mats.filter(x => x.miss).length, pct: (needed - units) / needed })
+        }
+      }
+      out.forEach(u => u.mats.forEach(x => x.shared = demand[x.m] > 1));
+      return out.sort((a, b) => a.units - b.units || a.kinds - b.kinds || b.pct - a.pct || a.p.name.localeCompare(b.p.name, "es"));
+    }
+    function renderNext() {
+      const list = nextUpgrades(), ready = list.filter(u => !u.units).length;
+      const shown = ui.showAllNext ? list : list.slice(0, Math.max(6, ready));
+      $("upnext").innerHTML = `<div class="upnext-head"><h2 id="upnext-h">Próximas mejoras</h2>
+    <span class="note">${ready ? `<b style="color:var(--done)">${ready} lista${ready > 1 ? "s" : ""} para la Gran Hada</b> · ` : ""}ordenadas por unidades que te faltan</span></div>
+    ${list.length ? shown.map(u => `<div class="up${u.units ? "" : " ready"}">
+      <div class="up-miss"><b>${u.units || "✓"}</b><span>${u.units ? "faltan" : "lista"}</span></div>
+      <div class="up-body"><div class="up-title">${esc(u.p.name)} <small>★${u.L + 1}${u.s.single ? "" : " · " + esc(u.s.name)}</small></div>
+        <div class="up-mats">${u.mats.map(x => `<span class="tag ${x.miss ? "short" : "have"}" title="${x.shared ? "Otras piezas también lo piden para su siguiente nivel" : ""}">${x.miss ? `faltan <b class="num">${x.miss}</b> de ${x.q}` : `<b class="num">${x.q}</b> ✓`} ${esc(x.m)}${x.shared ? '<span class="shared">⇄</span>' : ""}</span>`).join("")}</div></div>
+      ${u.units ? "<span></span>" : `<button class="btn primary" data-deduct="${u.p.id}">Mejorada: descontar</button>`}
+    </div>`).join("") : `<p class="empty">No queda nada por mejorar.</p>`}
+    ${list.length > shown.length || ui.showAllNext ? `<div><button class="btn" data-act="togglenext">${ui.showAllNext ? "Ver menos" : "Ver las " + list.length}</button> <span class="note">⇄ = material compartido: el cálculo asume que lo usas solo para esa pieza.</span></div>` : ""}`;
+    }
+    function render() {
+      renderNext();
+      const t = totals();
+      // stats
+      let stars = 0, maxStars = 0, maxed = 0, pieces = 0;
+      SETS.forEach(s => { if (state.skip[s.id]) return; s.items.forEach(p => { pieces++; stars += lvl(p.id); maxStars += 4; if (lvl(p.id) === 4) maxed++ }) });
+      const units = Object.values(t).reduce((a, b) => a + b.total, 0);
+      const nextUnits = Object.values(t).reduce((a, b) => a + b.next, 0);
+      $("stats").innerHTML = [
+        [stars + " / " + maxStars, "estrellas"], [maxed + " / " + pieces, "piezas a ★4"],
+        [nextUnits.toLocaleString("es"), "para el siguiente nivel"], [units.toLocaleString("es"), "unidades hasta ★4"]
+      ].map(([b, s]) => `<div class="stat"><b>${b}</b><span>${s}</span></div>`).join("") + `<div class="stat"><span class="sync" id="sync">${esc(syncMsg)}</span></div>`;
+
+      // toolbar
+      $("toolbar").innerHTML = (ui.filter ? `<span class="chip">Piezas que aún necesitan <b>${esc(ui.filter)}</b><button class="btn" style="padding:0 6px;border:none;background:none" data-act="clearfilter" aria-label="Quitar filtro">✕</button></span>` : `<span class="note">Pulsa una estrella para fijar el nivel actual. Pulsa un material para ver qué piezas lo necesitan.</span>`)
+        + `<span style="flex:1"></span>` + (ui.confirmReset ? `<button class="btn danger" data-act="reset-yes">Sí, borrar todo</button><button class="btn" data-act="reset-no">Cancelar</button>` : `<button class="btn" data-act="reset">Reiniciar progreso</button>`);
+
+      // sets
+      const groups = [["Conjuntos", SETS.filter(s => !s.single && !s.amiibo)], ["Conjuntos amiibo", SETS.filter(s => !s.single && s.amiibo)], ["Piezas sueltas", SETS.filter(s => s.single)]];
+      $("setsRoot").innerHTML = groups.map(([title, list]) => {
+        const vis = list.filter(s => !ui.filter || s.items.some(p => needs(p, ui.filter)) && !state.skip[s.id]);
+        if (!vis.length) return "";
+        return `<div class="group-title"><h2>${title}</h2><span class="eyebrow">${vis.length}</span></div><div class="sets">${vis.map(setCard).join("")}</div>`
+      }).join("")
+        || `<p class="empty">Ninguna pieza contada necesita ya ${esc(ui.filter)}.</p>`;
+
+      // materials: what you have vs. what's left (next level and up to ★4)
+      let rows = Object.entries(t).filter(([, v]) => v.total > 0).map(([m, v]) => {
+        const have = inv[m] || 0;
+        return { m, have, next: v.next, total: v.total, fNext: Math.max(0, v.next - have), fTotal: Math.max(0, v.total - have) }
+      });
+      const byName = (a, b) => a.m.localeCompare(b.m, "es");
+      const sorters = {
+        // Materials needed for the next level first, fewest missing first; the rest after.
+        falta: (a, b) => (b.next > 0) - (a.next > 0) || a.fNext - b.fNext || a.fTotal - b.fTotal || byName(a, b),
+        total: (a, b) => b.fTotal - a.fTotal || byName(a, b),
+        cat: (a, b) => CAT(a.m).localeCompare(CAT(b.m)) || byName(a, b),
+        az: byName
+      };
+      rows.sort(sorters[ui.sort]);
+      const ready = rows.filter(r => r.next > 0 && r.fNext === 0).length, neededNext = rows.filter(r => r.next > 0).length;
+      const opt = (v, l) => `<option value="${v}"${ui.sort === v ? " selected" : ""}>${l}</option>`;
+      const cell = (n, ok) => ok ? `<span class="n ok" title="Tienes suficiente">✓</span>` : `<span class="n${n ? "" : " zero"}">${n || "·"}</span>`;
+      $("mats").innerHTML = `<div class="mats-head"><h2>Materiales</h2>
+    <label class="note" for="sortSel">Ordenar <select id="sortSel">${opt("falta", "Menos por conseguir")}${opt("total", "Más por conseguir")}${opt("cat", "Tipo")}${opt("az", "A–Z")}</select></label></div>
+    <p class="note" style="margin:0 0 8px">Listos para el siguiente nivel: <b class="num">${ready} / ${neededNext}</b> materiales</p>
+    <div class="legend">${Object.entries(CATS).map(([k, v]) => `<span>${glyph(k)}${v}</span>`).join("")}</div>
+    <div class="mat-cols"><span></span><span>${rows.length} materiales</span><span>Tengo</span><span title="Te faltan para el siguiente nivel">Falta sig.</span><span title="Te faltan para llegar a ★4">Falta ★4</span></div>
+    ${rows.length ? rows.map(r => `<div class="mat${ui.filter === r.m ? " sel" : ""}">${glyph(CAT(r.m))}
+      <button class="mat-name" data-mat="${esc(r.m)}" title="Necesitas ${r.next} para el siguiente nivel y ${r.total} hasta ★4">${esc(r.m)}</button>
+      <span class="step"><button data-inv="-1" data-m="${esc(r.m)}" aria-label="Quitar uno de ${esc(r.m)}">−</button><input type="number" min="0" max="9999" inputmode="numeric" id="inv-${slug(r.m)}" data-invinput="${esc(r.m)}" value="${r.have}" aria-label="Unidades de ${esc(r.m)}"><button data-inv="1" data-m="${esc(r.m)}" aria-label="Añadir uno de ${esc(r.m)}">+</button></span>
+      ${r.next ? cell(r.fNext, r.fNext === 0) : cell(0, false)}${cell(r.fTotal, r.fTotal === 0)}</div>`).join("") : `<p class="empty">Todo al máximo. Hyrule está a salvo.</p>`}`;
+    }
+    function setCard(s) {
+      const off = !!state.skip[s.id];
+      const allMax = s.items.every(p => lvl(p.id) === 4);
+      return `<article class="set${off ? " off" : ""}${allMax ? " max" : ""}">
+    <div class="set-head"><div><h3>${esc(s.name)}</h3><div class="bonus">${esc(s.bonus)}</div></div>
+      <label class="count-toggle"><input type="checkbox" id="cnt-${s.id}" data-skip="${s.id}"${off ? "" : " checked"}> Contar</label></div>
+    ${s.items.map(p => {
+        const L = lvl(p.id), nx = p.recipe[L];
+        return `<div class="piece">
+        <div class="piece-row">${s.single ? "<span></span>" : `<span class="piece-name">${esc(p.name)}</span>`}
+          <div class="stars" role="group" aria-label="Nivel de ${esc(p.name)}">${[1, 2, 3, 4].map(n => `<button class="star${n <= L ? " on" : ""}" data-piece="${p.id}" data-n="${n}" aria-label="${n} estrellas" aria-pressed="${n <= L}">${STAR}</button>`).join("")}</div></div>
+        <div class="next${nx ? "" : " maxed"}">${nx ? "★" + (L + 1) + ": " + nx.map(([m, q]) => `<span class="num">${q}×</span> ${esc(m)}`).join(", ") : "Al máximo"}</div></div>`
+      }).join("")}
+    ${s.single ? "" : `<div class="set-foot"><span class="bonus">${s.amiibo ? "Requiere amiibo" : ""}</span><button class="btn primary" data-up="${s.id}"${allMax ? " disabled" : ""}>Mejorar conjunto +1★</button></div>`}
+  </article>`}
+
+    // ---------- Events ----------
+    document.addEventListener("click", e => {
+      const b = e.target.closest("button,input[type=checkbox]"); if (!b) return;
+      if (b.dataset.piece) { const id = b.dataset.piece, n = +b.dataset.n; state.levels[id] = lvl(id) === n ? n - 1 : n; changed() }
+      else if (b.dataset.up) { SETS.find(s => s.id === b.dataset.up).items.forEach(p => state.levels[p.id] = Math.min(4, lvl(p.id) + 1)); changed() }
+      else if (b.dataset.deduct) {
+        const id = b.dataset.deduct, p = SETS.flatMap(s => s.items).find(x => x.id === id), L = lvl(id);
+        if (L < 4) { p.recipe[L].forEach(([m, q]) => setInv(m, (inv[m] || 0) - q)); state.levels[id] = L + 1; changed() }
+      }
+      else if (b.dataset.act === "togglenext") { ui.showAllNext = !ui.showAllNext; render() }
+      else if (b.dataset.inv) { setInv(b.dataset.m, (inv[b.dataset.m] || 0) + (+b.dataset.inv)) }
+      else if (b.dataset.mat) { ui.filter = ui.filter === b.dataset.mat ? null : b.dataset.mat; render() }
+      else if (b.dataset.act === "clearfilter") { ui.filter = null; render() }
+      else if (b.dataset.act === "reset") { ui.confirmReset = true; render() }
+      else if (b.dataset.act === "reset-no") { ui.confirmReset = false; render() }
+      else if (b.dataset.act === "reset-yes") { ui.confirmReset = false; state = { levels: {}, skip: {} }; changed() }
+    });
+    document.addEventListener("change", e => {
+      if (e.target.dataset.skip) { const id = e.target.dataset.skip; if (e.target.checked) delete state.skip[id]; else state.skip[id] = true; changed() }
+      if (e.target.id === "sortSel") { ui.sort = e.target.value; render() }
+      if (e.target.dataset.invinput !== undefined) { setInv(e.target.dataset.invinput, parseInt(e.target.value, 10) || 0) }
+    });
+
+    // ---------- Persistence (FastAPI + Postgres) ----------
+    let saveTimer = null, saving = false, pending = false;
+    function changed() { render(); clearTimeout(saveTimer); saveTimer = setTimeout(save, 500) }
+    async function save() {
+      if (saving) { pending = true; return } saving = true; setSync("Guardando…");
+      try {
+        const r = await fetch("/api/progress", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(state) });
+        if (!r.ok) throw new Error(r.status);
+        setSync("Guardado en Postgres");
+      } catch (e) { setSync("Error al guardar: ¿está el backend levantado?") }
+      saving = false; if (pending) { pending = false; save() }
+    }
+    function setSync(m) { syncMsg = m; const el = $("sync"); if (el) el.textContent = m }
+
+    // Inventory: one PUT per material, debounced so fast +/+/+ clicks send a single request.
+    const invTimers = {};
+    function setInv(m, q) {
+      q = Math.max(0, Math.min(9999, q)); inv[m] = q; render();
+      clearTimeout(invTimers[m]);
+      invTimers[m] = setTimeout(async () => {
+        try {
+          const r = await fetch("/api/inventory/" + encodeURIComponent(m), { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ qty: q }) });
+          if (!r.ok) throw new Error(r.status); setSync("Guardado en Postgres")
+        }
+        catch (e) { setSync("Error al guardar el inventario") }
+      }, 400)
+    }
+
+    async function load() {
+      setSync("Cargando…"); render();
+      try {
+        const [r, ri] = await Promise.all([fetch("/api/progress"), fetch("/api/inventory")]);
+        if (!r.ok || !ri.ok) throw new Error(r.status + "/" + ri.status);
+        const d = await r.json(); state = { levels: d.levels || {}, skip: d.skip || {} }; inv = await ri.json();
+        setSync("Cargado desde Postgres");
+      } catch (e) { setSync("No se pudo cargar el progreso del backend") }
+      render();
+    }
+    load();
+  </script>
+
+</body>
+
+</html>
